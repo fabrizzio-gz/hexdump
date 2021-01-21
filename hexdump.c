@@ -1,13 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 void print_line_chars(char *chars);
-int is_printable(unsigned char c);
+int is_printable(char c);
+
 
 /* Prints the hex characters of a file */
 int main(int argc, char *argv[]) {
   FILE *fp;
-  unsigned char c;
+  int char_read;
+  char c;
   char chars[17];  // 16 chars each line + '\0'
   int count = 0, is_limited = 0, limit;
   
@@ -32,14 +35,22 @@ int main(int argc, char *argv[]) {
     return 3;
   }
 
+  /* `char_read` is set to int as a workaround when read char is 255 (0xff).
+   * In contrast, -1 = 0xffffffff but a char type can't tell the difference.
+   * apply_limit is used as a short-circuit. If it is set to 1, 
+   * count < limit won't be evaluated.
+   * */
   int apply_limit = !is_limited;
-  while ((c = getc(fp)) != EOF && (apply_limit || count < limit)) {
+  while ((char_read = getc(fp)) != EOF && (apply_limit || count < limit)) {
+    c = read_char;
     if (count % 16 == 0) {
       if (count != 0) print_line_chars(chars);
       printf("%08x  ", count);
     }
-    
-    printf("%02x ", c);
+    /* c is casted to unsigned char to avoid issue with negative values 
+     * conditional string that follows is used to add an extra space every byte
+     */
+    printf("%02x %s", (unsigned char) c, count % 8 == 7 ?  " " : ""); // Add extra space every byte
     chars[count % 16] = is_printable(c) ? c : '.';
     chars[count % 16 + 1] = '\0';
     count++;
@@ -48,29 +59,28 @@ int main(int argc, char *argv[]) {
   
   /* Finish current line */
   int old_count = count;
-  while (count++ % 16) {
-    printf("   ");
-    if (count % 16 == 0) {
-      print_line_chars(chars);
-      printf("%08x  ", old_count);
-    }
+  while (count++ % 16) 
+    printf("   %s", count % 8 == 7 ?  " " : ""); // Adds one extra space every byte
       
+  if (1) {
+    print_line_chars(chars);
+    printf("%08x  ", old_count);
   }
 
-  fclose(fp);
   printf("\n");
+  fclose(fp);
+  
   return 0;
 }
 
 
 void print_line_chars(char *chars) {
-  
-  printf(" ");
   printf("|%s|\n", chars);
 }
 
 
-int is_printable(unsigned char c) {
+int is_printable(char c) {
   /* Check if c is between printable ASCII chars */
   return c >= 32 && c <= 126;
 }
+
