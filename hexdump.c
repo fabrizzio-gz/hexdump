@@ -8,24 +8,32 @@ int is_printable(unsigned char c);
 int main(int argc, char *argv[]) {
   FILE *fp;
   unsigned char c;
-  char chars[17];
-  chars[17] = '\0';
-  int count = 0, limit = 0;
+  char chars[17];  // 16 chars each line + '\0'
+  int count = 0, is_limited = 0, limit;
   
-  if (argc != 2) {
-    printf("Usage: hexdump <file>\n");
+  if (argc < 2 || argc > 3) {
+    printf("Usage: hexdump <file> [<count>]\n");
     return 1;
+  }
+
+  if (argc == 3) {
+    is_limited = 1;
+    limit = atoi(argv[2]);
+    if (limit == 0) {
+      printf("Invalid byte-count: %s\n", argv[2]);
+      return 2;
+    }
   }
 
   fp = fopen(argv[1], "r");
 
   if (fp == NULL) {
     printf("Invalid file or path: %s\n", argv[1]);
-    return 1;
+    return 3;
   }
-    
-  int i = 0;
-  while ((c = getc(fp)) != EOF && i++ < 40) {
+
+  int apply_limit = !is_limited;
+  while ((c = getc(fp)) != EOF && (apply_limit || count < limit)) {
     if (count % 16 == 0) {
       if (count != 0) print_line_chars(chars);
       printf("%08x  ", count);
