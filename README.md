@@ -12,7 +12,13 @@ Compile and execute as:
 
 It will display the hexadecimal byte-by-byte contents of `<file>` and stop at either the end of the file or when `<count>` bytes have been displayed.
 
-Example:
+## Examples
+
+To print all bytes of `test.wav`:
+
+`./hexdump test.wav`
+
+To print only first 10 bytes of `test.wav`:
 
 `./hexdump test.wav 10`
 
