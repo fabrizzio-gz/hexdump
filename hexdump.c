@@ -12,8 +12,8 @@ int main(int argc, char *argv[]) {
   int count = 0, limit = 0;
   
   if (argc != 2) {
-    printf("Usage: hexdump <file>\n");
-    return 1;
+    stderr("Usage: hexdump <file>\n");
+    exit(1);
   }
 
   fp = fopen(argv[1], "r");
