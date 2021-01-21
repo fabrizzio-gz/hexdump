@@ -1,6 +1,9 @@
 # hexdump
-A (partial) clone of the `hexdump -c` command written in C.
+
+A (simplified) clone of the `hexdump -c` command written in C.
+
 ## Usage
+
 Compile as:
 `gcc hexdump.c -o hexdump`
 On the command line:
