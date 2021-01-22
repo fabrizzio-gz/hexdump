@@ -1,6 +1,6 @@
 # hexdump
 
-A (simplified) clone of the `hexdump -c` command written in C.
+A (simplified) clone of the `hexdump -C` command written in C.
 
 ## Usage
 
