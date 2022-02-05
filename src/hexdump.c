@@ -9,7 +9,7 @@ int is_printable(char c);
 /* Prints the hex characters of a file */
 int main(int argc, char *argv[]) {
   FILE *fp;
-  int char_read;
+  int read_char;
   char c;
   char chars[17];  // 16 chars each line + '\0'
   int count = 0, is_limited = 0, limit;
@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
    * count < limit won't be evaluated.
    * */
   int apply_limit = !is_limited;
-  while ((char_read = getc(fp)) != EOF && (apply_limit || count < limit)) {
+  while ((read_char = getc(fp)) != EOF && (apply_limit || count < limit)) {
     c = read_char;
     if (count % 16 == 0) {
       if (count != 0) print_line_chars(chars);
